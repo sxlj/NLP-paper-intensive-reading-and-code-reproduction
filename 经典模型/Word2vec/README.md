@@ -1,32 +1,30 @@
-@[toc]
-
 ### 一、储备知识
 
 #### 1. 语言模型的概念
 &emsp;&emsp;语言模型是用于计算一个句子出现的概率，即语言模型可以判断某一句话从语法上是否通顺（是不是人话），从语义上是否有歧义。在很多时候，我们都要度量一句话的出现概率，一句话的出现概率等同于一句话语法的流畅程度。
 #### 2. 语言模型的发展
  - 基于专家语法规则的语言模型
-  语言学家企图总结出一套通用的语法规则，比如形容词后面接名词等
+    语言学家企图总结出一套通用的语法规则，比如形容词后面接名词等
 
  - 基于统计学的语言模型
-  通过概率计算来刻画语言模型
-  $$
+    通过概率计算来刻画语言模型
+$$
   P_{LM}(s)=P_{LM}(w_1,w_2,...,w_n)=P_{LM}(w_1)P_{LM}(w_2|w_1)...P_{LM}(w_n|w_1w_2...w_{n-1})
-  $$
+$$
   基于马尔科夫假设，假设：任意一个词，它的出现概率只与前面出现的一个词(或者几个词)有关，则可以将语言模型简化如下：
   Unigram Model：
-  $$
-  P_{LM}(w)=\prod_{i=1}^nP_{LM}(w_i)
-  $$
+$$
+P_{LM}(w)=\prod_{i=1}^nP_{LM}(w_i)
+$$
   Bigram Model：
-  $$
+$$
   P_{LM}(s)=P_{LM}(w_1)P_{LM}(w_2|w_1)P_{LM}(w_3|w_2)...P_{LM}(w_n|w_{n-1})
-  $$
+$$
   Trigram Model：
-  $$
+$$
   P_{LM}(s)=P_{LM}(w_1)P_{LM}(w_2|w_1)P_{LM}(w_3|w_2，w_1)...P_{LM}(w_n|w_{n-1}，w_{n-2})
-  $$
-  
+$$
+
 #### 3.语言模型的平滑操作
 &emsp;&emsp;有一些词或者词组在语料中没有出现过，但是这不能代表它不可能存在。平滑操作就是给那些没有出现过的词或者词组也给一个比较小的概率。
 &emsp;&emsp;平滑概念指的是试图给没有出现的N-gram分配一个比较合理的数值出来，不至于直接为0。下面介绍多种平滑策略：
@@ -99,27 +97,27 @@ $$单词和短语的分布式表示及其组成$$
 &emsp;&emsp;语言模型是无监督任务（不需要标注语料）。那么没有标注的语料是如何做监督学习的呢？根据前n-1个单词，预测第n个位置单词，这样就可以利用无标注语料进行监督学习。
 
  - 输入层
-  将词映射成向量，相当于一个$1×V$的one-hot向量乘以一个$V×D$的向量得到一个$1×D$的向量
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/83bbc44b135545f1886f5f68a33e98ff.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NjY0OTA1Mg==,size_16,color_FFFFFF,t_70)
-  在上图 前馈神经网络语言模型中，可以使用$1×V×V×D=1×D$并行计算加速。
+    将词映射成向量，相当于一个$1×V$的one-hot向量乘以一个$V×D$的向量得到一个$1×D$的向量
+    ![在这里插入图片描述](https://img-blog.csdnimg.cn/83bbc44b135545f1886f5f68a33e98ff.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NjY0OTA1Mg==,size_16,color_FFFFFF,t_70)
+    在上图 前馈神经网络语言模型中，可以使用$1×V×V×D=1×D$并行计算加速。
 
  - 隐藏层
-  一个以tanh为激活函数的全连接层
-  $$
+    一个以tanh为激活函数的全连接层
+$$
   a=tanh(d+Wx)
-  $$
-  
+$$
+
 
  - 输出层
-  一个全连接层，后面接一个softmax函数来生成概率分布。
-  $$
+    一个全连接层，后面接一个softmax函数来生成概率分布。
+$$
   y=b+Ua
-  $$
+$$
   其中y是一个$1×V$​的向量,使用softmax进行归一化
-  $$
+$$
   P(w_t|w_{t-n+1},...,w_{t-1})=\frac{exp(y_{w_t})}{\sum_iexp(y_{w_t})}
-  $$
-  
+$$
+
 
 **语言模型困惑度和Loss关系：**
 多分类的交叉熵损失函数如下：T表示句子中词的个数
@@ -132,25 +130,25 @@ $$
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/aca7719a560e41b4899be6d9de11b38a.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NjY0OTA1Mg==,size_16,color_FFFFFF,t_70)
 
  - 输入层
-  和 NNLM一 样 ，需要将当前时间步的输入转化为词向量
+    和 NNLM一 样 ，需要将当前时间步的输入转化为词向量
 
  - 隐藏层
-  对输入和上一时间步的隐藏输出进行全连接层操作
-  $$
+    对输入和上一时间步的隐藏输出进行全连接层操作
+$$
   s(t)=Uw(t)+Ws(t-1)+d
-  $$
-  
+$$
+
 
  - 输出层
-  一个全连接层，后面接一个softmax函数来生成概率分布
-  $$
+    一个全连接层，后面接一个softmax函数来生成概率分布
+$$
   y(t)=b+Vs(t)
-  $$
+$$
   其中$y$是一个$1×V$​的向量：
-  $$
+$$
   P(w_t|w_{t-n+1},...,w_{t-1})=\frac{exp(y_{w_t})}{\sum_iexp(y_{w_t})}
-  $$
-  
+$$
+
 
 直观展示如下：
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/2413632a7ec74ab1a139ee74b5bb7614.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NjY0OTA1Mg==,size_16,color_FFFFFF,t_70)
@@ -180,9 +178,9 @@ $$p(w_{t-1}|w_t)\\p(w_{t-2}|w_t)\\p(w_{t+1}|w_t)\\p(w_{t+2}|w_t)$$
  - $W$为**中心词的词向量矩阵**，大小为$V×D$，$w_i$与$W$矩阵相乘得到一个$1×D$的词向量。
 
  - $W^*$为**周围词的词向量矩阵**，将词向量矩阵与周围词矩阵$W^*$相乘得到$1×V$的向量，将向量softmax就可以得到概率。
-  $$
+$$
   p(w_{i-1}|w_i)=\frac{exp(u_{w_{i-1}}^Tv_{w_{i}})}{\sum_{w=1}^Vexp(u_{w}^Tv_{w_{i}})}
-  $$
+$$
   （如果按这个公式理解的话，$W^*$是$V×D$）
 
  - 目标是使得对应位置的概率越大越好，通过梯度反向传播训练$W^*$与$W$，$W^*$与$W$就是所谓的词向量，那么，我们要选择哪一个作为最终词向量，可以采用如下手段：
@@ -216,57 +214,57 @@ $$
 	>- $(W+W^*)/2$（如果按这个公式理解的话，$W^*$是$V×D$）
 	
  - 损失函数
- $$
+$$
   J(\theta)=\frac{1}{T}\sum_{t=1}^Tp(w_t|w_{t-2},w_{t-1},w_{t+1},w_{t+2})\\
     J(\theta)=\frac{1}{T}\sum_{t=1}^T\frac{exp(u_{w_{sum}}^Tv_{w_{i}})}{\sum_{w=1}^Vexp(u_{sum}^Tv_{w_{j}})}
-  $$
+$$
     损失函数越大越好
 ##### 4.3 关键技术
 &emsp;&emsp;softmax涉及到$1×D$的$U$矩阵与$D×V$的V的矩阵相乘，得做V次相乘，$V$是特别大的，所以，全连接层也是特别大的。那么，应该如何降低softmax的复杂度呢？下面介绍两种方法：层次softmax与负采样
  - Hierarchical softmax（层次softmax）
-  层次softmax的**基本思想**就是将softmax的计算转化成求多个sigmoid的计算，并且少于$log_2V$
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/4e6852349d3f4de497fb96c5affca28b.png)
-  转化为二叉树的结构
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/44c194fb50cf40a4ba42dbbd76512ac3.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NjY0OTA1Mg==,size_16,color_FFFFFF,t_70)
-  所以，如果是满二叉树，只需要计算$log_2V$个sigmoid。softmax需要做V个指数相乘，而sigmoid只需要做一次指数相乘，$$log_2V<V$$,加速了softmax的运算。
-  &emsp;&emsp;满二叉树需要计算$log_2V$个sigmoid，那么构建带权重路径最短二叉树-Huffman树可以计算少于$log_2V$个sigmoid。
-  &emsp;&emsp;Skip-gram的层次softmax如下：
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/0fa9d2b054e24015aa8d30a17bcbb3d4.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NjY0OTA1Mg==,size_16,color_FFFFFF,t_70#pic_center)
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/876eb1486617402fb2b65cafb370448c.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NjY0OTA1Mg==,size_16,color_FFFFFF,t_70#pic_center)
-  $$p(I|c)=\sigma(\theta_0^Tv_c)\sigma(\theta_1^Tv_c)\sigma(1-\theta_2^Tv_c)=\sigma(\theta_0^Tv_c)\sigma(\theta_1^Tv_c)\sigma(-\theta_2^Tv_c)$$
-  $v_c$是中心词向量
-  &emsp;&emsp;推广开来，
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/d178fe39ace04bee88b30241b04c84da.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NjY0OTA1Mg==,size_16,color_FFFFFF,t_70#pic_center)
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/d518b6f4f67341378e1c2255e0f9c686.png#pic_center)
-  其中，$[|x|]=1 \ or -1$
-  $ch(n(w,j))=n(w,j+1)$是用来判断是否是右孩子节点
-  $v_{w1}$是中心词的词向量
-  $v^{'}_n(w,j)$是词$w$在树上的第$j$个节点的参数
-  &emsp;&emsp;CBOW的层次softmax如下：
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/6ee9477355d946a79e37202bd0905210.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NjY0OTA1Mg==,size_16,color_FFFFFF,t_70#pic_center)
-  $$
+    层次softmax的**基本思想**就是将softmax的计算转化成求多个sigmoid的计算，并且少于$log_2V$
+    ![在这里插入图片描述](https://img-blog.csdnimg.cn/4e6852349d3f4de497fb96c5affca28b.png)
+    转化为二叉树的结构
+    ![在这里插入图片描述](https://img-blog.csdnimg.cn/44c194fb50cf40a4ba42dbbd76512ac3.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NjY0OTA1Mg==,size_16,color_FFFFFF,t_70)
+    所以，如果是满二叉树，只需要计算$log_2V$个sigmoid。softmax需要做V个指数相乘，而sigmoid只需要做一次指数相乘，$$log_2V<V$$,加速了softmax的运算。
+    &emsp;&emsp;满二叉树需要计算$log_2V$个sigmoid，那么构建带权重路径最短二叉树-Huffman树可以计算少于$log_2V$个sigmoid。
+    &emsp;&emsp;Skip-gram的层次softmax如下：
+    ![在这里插入图片描述](https://img-blog.csdnimg.cn/0fa9d2b054e24015aa8d30a17bcbb3d4.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NjY0OTA1Mg==,size_16,color_FFFFFF,t_70#pic_center)
+    ![在这里插入图片描述](https://img-blog.csdnimg.cn/876eb1486617402fb2b65cafb370448c.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NjY0OTA1Mg==,size_16,color_FFFFFF,t_70#pic_center)
+    $$p(I|c)=\sigma(\theta_0^Tv_c)\sigma(\theta_1^Tv_c)\sigma(1-\theta_2^Tv_c)=\sigma(\theta_0^Tv_c)\sigma(\theta_1^Tv_c)\sigma(-\theta_2^Tv_c)$$
+    $v_c$是中心词向量
+    &emsp;&emsp;推广开来，
+    ![在这里插入图片描述](https://img-blog.csdnimg.cn/d178fe39ace04bee88b30241b04c84da.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NjY0OTA1Mg==,size_16,color_FFFFFF,t_70#pic_center)
+    ![在这里插入图片描述](https://img-blog.csdnimg.cn/d518b6f4f67341378e1c2255e0f9c686.png#pic_center)
+    其中，$[|x|]=1 \ or -1$
+    $ch(n(w,j))=n(w,j+1)$是用来判断是否是右孩子节点
+    $v_{w1}$是中心词的词向量
+    $v^{'}_n(w,j)$是词$w$在树上的第$j$个节点的参数
+    &emsp;&emsp;CBOW的层次softmax如下：
+    ![在这里插入图片描述](https://img-blog.csdnimg.cn/6ee9477355d946a79e37202bd0905210.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NjY0OTA1Mg==,size_16,color_FFFFFF,t_70#pic_center)
+$$
   p(I|c)=\sigma(u_o^T\theta_o)\sigma(u_o^T\theta_1)\sigma(1-u_o^T\theta_2)=\sigma(u_o^T\theta_o)\sigma(u_o^T\theta_1)\sigma(-u_o^T\theta_2)
-  $$
+$$
   $u_o$​是窗口内上下文词向量的平均
 
  - Negative Sampling（负采样）
-  &emsp;&emsp;softmax之所以慢，是因为进行了词表大小V的多分类，所以，我们尝试舍弃多分类，提升速度。一个正样本，选取$k$个负样本，对于每个词，一次要输出一个概率，总共$k+1$个，$k<<V$。负采样的优化就是增大正样本的概率，减小负样本的概率
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/fac1e3f0b8ee4507bc1d0e7b0f94803a.png)
-  $$公式：Skip-gram的负采样$$
-  $v_c$是中心词向量
-  $u_o$是窗口内上下文词向量
-  $u_k$是负采样上下文词向量
-  这里还是需要每个词的上下文词向量，总的参数比HS多（每次计算量不多），经过实验结果，可以发现，负采样比层次softmax快，这是因为负采样比层次softmax需要计算更少的概率
-  &emsp;&emsp;那么，应该如何负采样呢？论文中提到一种方法：减少频率大的词抽样概率，增加频率小的词抽样概率。这样做不仅能加速训练，而且能得到更好的结果。
-  抽样概率计算方法如下：
-  $$
+    &emsp;&emsp;softmax之所以慢，是因为进行了词表大小V的多分类，所以，我们尝试舍弃多分类，提升速度。一个正样本，选取$k$个负样本，对于每个词，一次要输出一个概率，总共$k+1$个，$k<<V$。负采样的优化就是增大正样本的概率，减小负样本的概率
+    ![在这里插入图片描述](https://img-blog.csdnimg.cn/fac1e3f0b8ee4507bc1d0e7b0f94803a.png)
+    $$公式：Skip-gram的负采样$$
+    $v_c$是中心词向量
+    $u_o$是窗口内上下文词向量
+    $u_k$是负采样上下文词向量
+    这里还是需要每个词的上下文词向量，总的参数比HS多（每次计算量不多），经过实验结果，可以发现，负采样比层次softmax快，这是因为负采样比层次softmax需要计算更少的概率
+    &emsp;&emsp;那么，应该如何负采样呢？论文中提到一种方法：减少频率大的词抽样概率，增加频率小的词抽样概率。这样做不仅能加速训练，而且能得到更好的结果。
+    抽样概率计算方法如下：
+$$
   P(w)=\frac{U(w)^{\frac{3}{4}}}{Z}
-  $$
+$$
   $U(w)$是词$w$在数据集中出现的概率，$Z$为归一化的参数，使得求解之后的概率和为1
-  $$
+$$
   J(\theta)=log\sigma(u_o^Tv_c)+\sum_
   {i=1}^TE_{j-P(w)}[log\sigma(-u_o^Tv_j)]
-  $$
+$$
   $$公式：CBOW的负采样$$
   $u_o$是窗口内上下文词向量avg
   $v_c$是正确的中心词向量
@@ -345,5 +343,4 @@ $$
 
 ***
  如果对您有帮助，麻烦star！！！
-
 
